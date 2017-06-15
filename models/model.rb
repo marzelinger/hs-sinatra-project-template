@@ -3,6 +3,7 @@ require 'json'
 require 'rubygems'
 require 'rest-client'
 
+
 def find_image(search)
     r = RestClient::Request.execute(method: :post, 
                             url: "https://api.vimeo.com/oauth/authorize/client",
@@ -12,13 +13,12 @@ def find_image(search)
 #=> "{\"access_token\":\"scrt12334\",\"token_type\":\"bearer\",\"scope\":\"public\",\"app\":{\"name\":\"test\",\"uri\":\"/apps/79881\"}}"
 
     token = JSON.parse(r)["access_token"]
-   # methods = RestClient::Request.execute(method: :get, url: "https://api.vimeo.com", payload: {}, headers: {"Authorization"=>"Bearer #{token}"})
-    results = RestClient::Request.execute(method: :get, url: "https://api.vimeo.com/categories/musicvideos/tags/word/videos?query=#{search.gsub(" ","+")}",
+    #methods = RestClient::Request.execute(method: :get, url: "https://api.vimeo.com", payload: {}, headers: {"Authorization"=>"Bearer #{token}"})
+    results = RestClient::Request.execute(method: :get, url: "https://api.vimeo.com/categories/musicvideos/videos?query=#{search.gsub(" ","+")}",
                             timeout: 10, headers:  {"Authorization"=>"Bearer #{token}"})
     #/videos?query=beyonce"
     read_results = JSON.parse(results)
-    final_results = read_results["data"][0]["embed"]final_results["html"].gsub("1280","600").gsub("720","338")
-    return final_results
+    read_results["data"][0]["embed"]["html"]
+    #[0]["embed"]["html"].gsub("1280","600").gsub("720","338")
 end
-
-puts find_image("eminem")
+puts find_image("beyonce")
